@@ -5,3 +5,7 @@ venv/
 .env
 *.egg-info/
 .DS_Store
+
+# Symlinks into .agents/skills; git on Windows dereferences symlinks into
+# full copies instead of storing them as links, so keep only the source.
+.claude/skills/
