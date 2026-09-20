@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pakistan Boundaries - Upload</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 3rem auto; padding: 0 1rem; color: #222; }
+    h1 { font-size: 1.25rem; }
+    form { border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    input[type=file], input[type=text] { display: block; margin-bottom: 1rem; width: 100%; box-sizing: border-box; padding: 0.4rem; }
+    button { background: #1a5c1a; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; cursor: pointer; }
+    .error { background: #fdecea; color: #611a15; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 6px; margin-top: 1rem; }
+    .success { background: #eaf7ea; color: #1a4d1a; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 6px; margin-top: 1rem; }
+    code { background: #f2f2f2; padding: 0.1rem 0.3rem; border-radius: 4px; }
+    .hint { color: #666; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Update Pakistan boundary data</h1>
+  <p class="hint">
+    Upload a zip file containing a shapefile (<code>.shp</code>, <code>.shx</code>, <code>.dbf</code>,
+    and ideally <code>.prj</code>) with one polygon layer. This replaces all boundaries currently
+    used by the reverse-geocoding API.
+  </p>
+
+  <form method="post" action="/admin/upload" enctype="multipart/form-data">
+    <label for="file">Shapefile (.zip)</label>
+    <input type="file" id="file" name="file" accept=".zip" required>
+
+    <label for="name_field">Name field (optional)</label>
+    <input type="text" id="name_field" name="name_field"
+           placeholder="Leave blank to auto-detect (e.g. DISTRICT, NAME_2)">
+
+    <button type="submit">Upload and replace boundaries</button>
+  </form>
+
+  {% if error %}
+    <div class="error"><strong>Upload failed:</strong> {{ error }}</div>
+  {% endif %}
+
+  {% if result %}
+    <div class="success">
+      <strong>Success.</strong> Loaded {{ result.feature_count }} features from
+      <code>{{ result.filename }}</code>, using <code>{{ result.name_field }}</code> as the place name field.
+      <br><br>
+      Available fields: {{ result.fields_available | join(', ') }}
+    </div>
+  {% endif %}
+</body>
+</html>
